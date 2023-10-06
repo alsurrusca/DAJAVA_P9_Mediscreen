@@ -28,6 +28,8 @@ The front end is managed as a REST API with various Endpoints called
 * [Java 11](https://www.oracle.com/java/technologies/javase/jdk11-archive-downloads.html)
 * [Spring Boot](https://spring.io/projects/spring-boot)
 * [Maven](https://maven.apache.org/)
+* [MySQL](https://www.mysql.com/)
+* [MongoDB](https://www.mongodb.com/)
 * [Thymeleaf](https://www.thymeleaf.org/)
 * [Bootstrap](https://getbootstrap.com)
 * [Docker](https://www.docker.com/)
@@ -37,3 +39,10 @@ The front end is managed as a REST API with various Endpoints called
 <!-- GETTING STARTED -->
 ## Getting Started
 
+### Installation 
+
+1. Clone the repo
+2. Set configuration variable in each ms in "application.properties" as desired.
+3. Run all microservice
+4. Access the application in web browser 
+   ```Default : https://localhost:8080```
