@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://thymeleaf.org">
+
+<head xmlns:th="http://www.w3.org/1999/xhtml">
+    <meta charset="utf-8"/>
+    <title>View Assessment</title>
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap.css">
+
+</head>
+<body>
+<a href="/"> <img src="../../img/logo.jpg" class="rounded mx-auto d-block" alt="Welcome to Mediscreen"> </a>
+
+<div class="container">
+
+    <div class="row">
+        <h2 th:text="'View Patient Assessment for ' + ${patient.firstName} + ' ' + ${patient.lastName}"/>
+    </div>
+
+    <div class="row">
+        <form action="#" class="form-horizontal" style="width: 100%">
+            <div class="form-group">
+                <label class="col-sm-2 control-label"><h4>Patient ID:</h4></label>
+                <td style="width: 10%" th:text="${patient.id}" class="col-4"></td>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label"><h4>Family Name:</h4></label>
+                <td style="width: 10%" th:text="${patient.lastName}" class="col-4"></td>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label"><h4>Given Name:</h4></label>
+                <td style="width: 10%" th:text="${patient.firstName}" class="col-4"></td>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label"><h4>Age:</h4></label>
+                <td style="width: 10%" th:text="${patient.birthDate}" class="col-4"></td>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label"><h4>Sex:</h4></label>
+                <td style="width: 10%" th:text="${patient.gender}" class="col-4"></td>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label"><h4>Age:</h4></label>
+                <p>Age: <span th:text="${age}"></span></p>
+
+
+
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-12">
+                    <a class="btn btn-danger btn-sm" href="/">Back</a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+</div>
+</body>
+
+</html>

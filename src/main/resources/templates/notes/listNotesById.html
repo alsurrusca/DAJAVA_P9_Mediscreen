@@ -1,0 +1,70 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://thymeleaf.org">
+<head>
+    <title>Mediscreen - Patient Detail</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <style>
+        .container {
+            margin-top: 50px;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+<a href="/">
+    <img src="../../img/logo.jpg" class="rounded mx-auto d-block" alt="Welcome to Mediscreen">
+</a>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <h2>Patient Detail</h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <!-- Affichez ici les informations du patient (par exemple, nom, prénom, adresse, etc.) -->
+            <p><strong>ID:</strong> <span th:text="${patient.id}"></span></p>
+            <p><strong>First Name:</strong> <span th:text="${patient.firstName}"></span></p>
+            <p><strong>Last Name:</strong> <span th:text="${patient.lastName}"></span></p>
+            <!-- Ajoutez d'autres informations du patient au besoin -->
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <h3>Notes</h3>
+            <!-- Affichez ici la liste de toutes les notes du patient -->
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>Note Content</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="note : ${notes}">
+                    <td th:text="${note.noteContent}"></td>
+                    <td>
+                        <a th:href="@{/notes/update/{id}(id=${note.id})}" class="btn btn-primary btn-sm">Edit Note</a>
+                        <a th:href="@{/notes/delete/{id}(id=${note.id})}" class="btn btn-danger btn-sm">Delete Note</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <a href="/" class="btn btn-info" title="Home">Home</a>
+    <a th:href="@{/view/{id}(id=${patient.id})}" class="btn btn-info">View fiche patient</a>
+    <a th:href="@{/view/{id}(id=${patient.id})}" class="btn btn-info" title="previous">Previous</a>
+
+
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+</body>
+</html>

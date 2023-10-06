@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Mediscreen - Update Note</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+
+    <style>
+        .container {
+            margin-top: 50px;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+        }
+    </style>
+
+    <a href="/"> <img src="../../img/logo.jpg" class="rounded mx-auto d-block" alt="Welcome to Mediscreen"> </a>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <h2>Update Patient's Notes</h2>
+
+            <form th:action="@{/notes/update/{id}(id=${notes.id})}" method="post">
+                <input type="hidden" th:name="_method" th:value="PUT"/>
+
+                <div class="mb-3">
+                    <label class="form-label" for="patId">Patient ID:</label>
+                    <div class="col-sm-10">
+                        <input type="text" id="patId" name="patId" th:value="${notes.patId}" readonly/>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label" for="noteContent">Note Content:</label>
+                    <div class="col-sm-10">
+                    <textarea class="form-control" id="noteContent" name="noteContent" rows="8" required th:text="${notes.noteContent}"></textarea>
+
+                    </div>
+                </div>
+                <br>
+                <button type="submit" class="btn btn-primary">update Note</button>
+                <a href="/notes/list" class="btn btn-info" title="previous">Previous</a>
+
+            </form>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+</body>
+</html>
