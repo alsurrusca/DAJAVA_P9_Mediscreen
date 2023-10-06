@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+ <html xmlns:th="http://thymeleaf.org">
+
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Mediscreen - Patient's file</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <style>
+        .container {
+            margin-top: 50px;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        .risk {
+            color: red;
+        }
+    </style>
+    <a href="/">
+        <img src="../../img/logo.jpg" class="rounded mx-auto d-block" alt="Welcome to Mediscreen">
+    </a>
+</head>
+
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 mx-auto">
+            <h1 class="mt-4 text-center">Patient's file</h1>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 mx-auto">
+            <h2 class="mt-4">Personal record:</h2>
+            <p>ID : <span th:text="${patient.id}" ></span></p>
+            <p>Lastname: <span th:text="${patient.lastName}"></span></p>
+            <p>Firstname: <span th:text="${patient.firstName}"></span></p>
+            <p>Age: <span th:text="${assessment.age}"></span></p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 mx-auto">
+            <h2 class="mt-4">Previously notes:</h2>
+            <ul>
+                <li th:each="note : ${assessment.notes}" th:text="${note.noteContent}"></li>
+                <a th:href="@{/notes/addNote(patientId=${patient.id})}" class="btn btn-primary btn-sm">Create Note</a>
+                <a th:href="@{/notes/listNotesById/{patId}(patId=${patient.id})}" class="btn btn-primary btn-sm">View all Note</a>
+
+            </ul>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 mx-auto">
+            <h2 class="mt-4">Risk:</h2>
+            <p>Patient n° <span th:text="${patient.id}"></span>: (age <span th:text="${assessment.age}"></span>)
+                diabetes assessment is: <span class="risk" th:text="${assessment.risk}"></span></p>
+            <a href="/patient/list" class="btn btn-info" title="previous">Previous</a>
+
+        </div>
+    </div>
+</div>
+
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>
