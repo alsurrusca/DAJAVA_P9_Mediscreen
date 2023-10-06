@@ -18,7 +18,6 @@ public class NotesService {
     private NotesRepository notesRepository;
 
     public List<Notes> findAllNotes() {
-        List<Notes> notes = notesRepository.findAll();
         return notesRepository.findAll();}
 
 

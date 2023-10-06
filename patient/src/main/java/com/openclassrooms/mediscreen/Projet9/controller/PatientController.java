@@ -47,9 +47,10 @@ public class PatientController {
     }
 
     @PostMapping("/patient/add")
-    public Patient addPatient(@RequestBody Patient patient, BindingResult result, Model model){
+    public String addPatient(@RequestBody Patient patient, BindingResult result, Model model){
      log.info("validate SUCCESS");
-          return patientService.validate(patient,result,model);
+         patientService.validate(patient,result,model);
+         return "redirect:/patient/list";
     }
 
     @GetMapping("/patient/update/{id}")

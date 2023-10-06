@@ -62,7 +62,7 @@ public class PatientAssessmentsService {
         return patientAssessment;
     }
 
-    private int countTrigger(List<PatientNote> notes) {
+    public int countTrigger(List<PatientNote> notes) {
         String noteString = "";
         for (PatientNote patientNote : notes) {
             noteString = noteString + " " + patientNote.getNote();

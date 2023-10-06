@@ -28,7 +28,6 @@ public class PatientService {
         return patientDao.save(patient);
     }
 
-
     public Optional<Patient> getById(Integer id) {
         return patientDao.findById(id);
     }
