@@ -29,6 +29,11 @@ public class PatientController {
         this.notesProxy = notesProxy;
     }
 
+    /**
+     * Get all patient
+     * @param model
+     * @return list of patient
+     */
     @GetMapping("/patient/list")
     public List<PatientBeans> view(Model model) {
         List<PatientBeans> patients = patientProxy.listPatients();
@@ -36,13 +41,23 @@ public class PatientController {
         return patients;
     }
 
+    /**
+     * Add patient
+     * @param model
+     * @return template patient/add
+     */
     @GetMapping("/patient/add")
     public String addPatient(Model model) {
         model.addAttribute("patient", new PatientBeans());
         return "patient/add";
     }
 
-
+    /**
+     * Validate patient
+     * @param model
+     * @param patientBeans
+     * @return template patient/list
+     */
     @PostMapping("/patient/add")
     public String validatePatient(Model model,  PatientBeans patientBeans) {
         patientProxy.validatePatient(patientBeans);
@@ -50,7 +65,12 @@ public class PatientController {
         return "redirect:/patient/list";
     }
 
-
+    /**
+     * Update patient
+     * @param id
+     * @param model
+     * @return template patient/update
+     */
     @GetMapping("/patient/update/{id}")
     public String showUpdateForm(@PathVariable("id") int id, Model model) {
        patientProxy.showUpdateForm(id);
@@ -60,6 +80,14 @@ public class PatientController {
         return "patient/update";
     }
 
+    /**
+     * Update patient
+     * @param id
+     * @param user
+     * @param result
+     * @param model
+     * @return template patient/update if it's failed / redirect patient/list if it's ok
+     */
     @PostMapping("/patient/update/{id}")
     public String updateUser(@PathVariable("id") int id, @Valid PatientBeans user,
                              BindingResult result, Model model) {
@@ -80,21 +108,23 @@ public class PatientController {
 
     }
 
+    /**
+     * delete patient
+     * @param id
+     * @param model
+     * @return redirect patient/list
+     */
     @GetMapping("/patient/delete/{id}")
     public String deletePatient(@PathVariable("id")int id, Model model){
         PatientBeans patientToDelete = patientProxy.findPatientById(id);
 
-        // Assurez-vous que le patient existe
         if (patientToDelete != null) {
-            // Récupérez toutes les notes associées à ce patient
             List<NotesBean> notesToDelete = notesProxy.getNoteByPatId(id);
 
-            // Supprimez les notes associées
             for (NotesBean note : notesToDelete) {
                 notesProxy.deleteNotes(note.getId());
             }
 
-            // Ensuite, supprimez le patient lui-même
             patientProxy.deletePatient(id);
 
             log.info("Delete Patient SUCCESS ");

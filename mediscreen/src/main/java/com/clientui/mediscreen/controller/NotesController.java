@@ -86,30 +86,36 @@ public class NotesController {
         return "notes/listNotesById";
     }
 
+    /**
+     * Add notes
+     * @param patientId
+     * @param model
+     * @return template notes/add
+     */
     @GetMapping("/notes/addNote")
     public String addNotes(@RequestParam("patientId") int patientId, Model model) {
-        // Créez une nouvelle instance de NotesBean
         NotesBean notesBean = new NotesBean();
 
-        // Définissez l'ID du patient pour la nouvelle note
         notesBean.setPatId(patientId);
 
-        // Ajoutez la nouvelle note et la liste des patients au modèle
         model.addAttribute("notes", notesBean);
         model.addAttribute("patient", patientProxy.findPatientById(patientId));
 
         return "notes/add";
     }
 
+    /**
+     * Validate notes
+     * @param notesBean
+     * @param model
+     * @return template view + noteId
+     */
     @PostMapping("/notes/addNote")
     public String validateNotes(@ModelAttribute("notes") NotesBean notesBean, Model model) {
-        // Validez les données de la nouvelle note, par exemple, en utilisant des annotations de validation
 
-        // Enregistrez la nouvelle note en associant correctement le patient
-        notesBean.setPatId(notesBean.getPatId()); // Assurez-vous que vous avez un getter pour PatientId dans NotesBean
+        notesBean.setPatId(notesBean.getPatId());
         notesProxy.validateNotes(notesBean);
 
-        // Réaffichez la page de détail du patient après l'ajout de la note
         return "redirect:/view/" + notesBean.getPatId();
     }
 
@@ -129,6 +135,14 @@ public class NotesController {
         return "notes/update";
     }
 
+    /**
+     * Update notes
+     * @param id
+     * @param notesBean
+     * @param result
+     * @param model
+     * @return template notes/update
+     */
     @PostMapping("/notes/update/{id}")
     public String updateNotes(@PathVariable("id") String id, @Valid NotesBean notesBean, BindingResult result, Model model) {
         if (result.hasErrors()) {
@@ -143,6 +157,12 @@ public class NotesController {
         return "redirect:/view/" + notesBean.getPatId();
     }
 
+    /**
+     * Delete notes
+     * @param id
+     * @param request
+     * @return redirect
+     */
     @GetMapping("/notes/delete/{id}")
     public String deleteNotes(@PathVariable("id") String id, HttpServletRequest request) {
         notesProxy.deleteNotes(id);

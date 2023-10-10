@@ -44,6 +44,12 @@ public class PatientAssessmentController {
         this.patientAssessmentBean = patientAssessmentBean;
     }
 
+    /**
+     * get patient assessment with age
+     * @param patId
+     * @param model
+     * @return template view
+     */
     @GetMapping("/view/{patId}")
     public String getPatientAssessment(@PathVariable("patId") int patId, Model model) {
         PatientBeans patient = patientProxy.findPatientById(patId);
@@ -69,7 +75,10 @@ public class PatientAssessmentController {
         return "view";
     }
 
-
+    /**
+     * Calculate risk with trigger count
+     * @param assessmentBean
+     */
     private void calculateRisk(PatientAssessmentBean assessmentBean) {
         int triggerCount = assessmentBean.getTriggerCount();
         int age = assessmentBean.getAge();
