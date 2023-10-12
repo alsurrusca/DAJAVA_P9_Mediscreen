@@ -11,7 +11,7 @@ public class Patient {
     private String lastName;
     private String firstName;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate date;
+    private LocalDate birthDate;
     private String gender;
     private String address;
     private String phone;
@@ -19,12 +19,13 @@ public class Patient {
     public Patient() {
     }
 
-    public Patient getPatientId(int patientId) {
-        return getPatientId(patientId) ;
+    public int getPatientId() {
+        return patientId;
     }
 
-    public void setPatientId(int patientId) {
+    public int setPatientId(int patientId) {
         this.patientId = patientId;
+        return patientId;
     }
 
     public String getLastName() {
@@ -43,12 +44,12 @@ public class Patient {
         this.firstName = firstName;
     }
 
-    public LocalDate getDate() {
-        return date;
+    public LocalDate getBirthDate() {
+        return birthDate;
     }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
+    public void setBirthDate(LocalDate birthDate) {
+        this.birthDate = birthDate;
     }
 
     public String getGender() {
@@ -81,7 +82,7 @@ public class Patient {
                 "patientId=" + patientId +
                 ", lastName='" + lastName + '\'' +
                 ", firstName='" + firstName + '\'' +
-                ", date=" + date +
+                ", date=" + birthDate +
                 ", gender='" + gender + '\'' +
                 ", address='" + address + '\'' +
                 ", phone='" + phone + '\'' +

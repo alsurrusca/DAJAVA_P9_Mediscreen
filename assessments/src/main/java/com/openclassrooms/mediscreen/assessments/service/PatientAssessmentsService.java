@@ -8,10 +8,10 @@ import com.openclassrooms.mediscreen.assessments.exceptions.NotesNotFoundExcepti
 import com.openclassrooms.mediscreen.assessments.exceptions.PatientNotFoundException;
 import com.openclassrooms.mediscreen.assessments.repository.PatientNoteRepository;
 import com.openclassrooms.mediscreen.assessments.repository.PatientRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.ComponentScan;
+
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -22,11 +22,12 @@ import java.util.Date;
 import java.util.List;
 
 @Service
-@ComponentScan("com.openclassrooms.mediscreen.assessments.repository")
 public class PatientAssessmentsService {
 
-    private final PatientNoteRepository patientNoteRepository;
-    private final PatientRepository patientRepository;
+    @Autowired
+    private PatientNoteRepository patientNoteRepository;
+    @Autowired
+    private PatientRepository patientRepository;
 
     // Variable is initialized from application.properties in prod, variable is defined here for testing purposes
     // This is to ensure that trigger terms are always constant for comparison in tests
@@ -34,76 +35,73 @@ public class PatientAssessmentsService {
     private List<String> triggerTerms = Arrays.asList("hemoglobin a1c", "microalbumin", "body height",
             "body weight", "smoker", "abnormal", "cholesterol", "dizziness", "relapse", "reaction", "antibodies");
 
-    private Logger log = LoggerFactory.getLogger(PatientAssessmentsService.class);
 
-    public PatientAssessmentsService(PatientNoteRepository patientNoteRepository, PatientRepository patientRepository) {
-        this.patientNoteRepository = patientNoteRepository;
-        this.patientRepository = patientRepository;
-    }
+    public Risk patientAssessment(int patId) throws PatientNotFoundException, NotesNotFoundException {
 
-    public PatientAssessment patientAssessment(int patId) throws PatientNotFoundException, NotesNotFoundException {
         Patient patient = patientRepository.findPatientById(patId);
-        if (patient == null) {
-            throw new PatientNotFoundException("Patient with ID " + patId + " not found.");
-        }
+        List<PatientNote> patientNotes = patientNoteRepository.getNoteByPatId(patId);
 
-        List<PatientNote> notes = patientNoteRepository.findByPatientId(patId);
-        if (notes.isEmpty()) {
-            throw new NotesNotFoundException("Patient with ID " + patId + " has no notes.");
-        }
-
-        int triggerCount = countTrigger(notes);
-
-        PatientAssessment patientAssessment = new PatientAssessment();
-        patientAssessment.setPatient(patient);
-        patientAssessment.setAge(calculateAge(patient.getDate()));
-        calculateRisk(patientAssessment, triggerCount);
-
-        return patientAssessment;
+        PatientAssessment patientAssessment = new PatientAssessment(patient, patientNotes);
+        patientAssessment.setAge(calculateAge(patientAssessment.getPatient()));
+        patientAssessment.setNotes(patientNotes);
+        int triggerCount = calculateTriggerCount(patientNotes);
+        patientAssessment.setTriggerCount(triggerCount);
+        calculateRisk(patientAssessment);
+        return patientAssessment.getRisk();
     }
 
-    public int countTrigger(List<PatientNote> notes) {
-        String noteString = "";
-        for (PatientNote patientNote : notes) {
-            noteString = noteString + " " + patientNote.getNote();
-        }
-        String finalNoteString = noteString;
+    public int calculateTriggerCount(List<PatientNote> notes) {
+        List<String> triggerTerms = Arrays.asList("hemoglobin a1c", "microalbumin", "body height", "body weight", "smoker", "abnormal", "cholesterol", "dizziness", "relapse", "reaction", "antibodies");
+        int triggerCount = 0;
+        if (notes != null) {
+            for (PatientNote note : notes) {
+                String noteContent = note.getNoteContent();
 
-        List<String> termsInNotes = new ArrayList<>();
-        triggerTerms.forEach(term -> {
-            if (finalNoteString.toLowerCase().contains(term.toLowerCase())) {
-                termsInNotes.add(term);
+                if (noteContent != null) {
+                    for (String term : triggerTerms) {
+                        if (noteContent.toLowerCase().contains(term.toLowerCase())) {
+                            triggerCount++;
+
+                        }
+                    }
+                }
             }
-        });
-
-        return termsInNotes.size();
+        }
+        return triggerCount;
     }
 
-    private int calculateAge(LocalDate birthDate) {
+    public int calculateAge(Patient patient) {
+
         LocalDate currentDate = LocalDate.now();
-        return Period.between(birthDate, currentDate).getYears();
+        LocalDate birthDate = patient.getBirthDate();
+        int age = Period.between(birthDate, currentDate).getYears();
+        return age;
     }
 
-    private void calculateRisk(PatientAssessment patientAssessment, int triggerCount) {
-        patientAssessment.setRisk(Risk.NONE);
-
-        if (triggerCount >= 2 && patientAssessment.getAge() > 29) {
-            patientAssessment.setRisk(Risk.BORDERLINE);
+    public void calculateRisk(PatientAssessment assessmentBean) {
+        int triggerCount = assessmentBean.getTriggerCount();
+        int age = assessmentBean.getAge();
+        Risk risk = Risk.NONE;
+        if (triggerCount >= 2 && age > 29) {
+            risk = Risk.BORDERLINE;
         }
-        if (triggerCount >= 3 && patientAssessment.getAge() < 30 && patientAssessment.getPatient().getGender().equals("M")) {
-            patientAssessment.setRisk(Risk.INDANGER);
+        if (triggerCount >= 3 && age < 30 && assessmentBean.getPatient().getGender().equals("M")) {
+            risk = Risk.INDANGER;
         }
-        if (triggerCount >= 4 && patientAssessment.getAge() < 30 && patientAssessment.getPatient().getGender().equals("F")) {
-            patientAssessment.setRisk(Risk.INDANGER);
+        if (triggerCount >= 4 && age < 30 && assessmentBean.getPatient().getGender().equals("F")) {
+            risk = Risk.INDANGER;
         }
-        if (triggerCount >= 5 && patientAssessment.getAge() < 30 && patientAssessment.getPatient().getGender().equals("M")) {
-            patientAssessment.setRisk(Risk.EARLYONSET);
+        if (triggerCount >= 5 && age < 30 && assessmentBean.getPatient().getGender().equals("M")) {
+            risk = Risk.EARLYONSET;
         }
-        if (triggerCount >= 7 && patientAssessment.getAge() < 30 && patientAssessment.getPatient().getGender().equals("F")) {
-            patientAssessment.setRisk(Risk.EARLYONSET);
+        if (triggerCount >= 7 && age < 30 && assessmentBean.getPatient().getGender().equals("F")) {
+            risk = Risk.EARLYONSET;
         }
-        if (triggerCount >= 8 && patientAssessment.getAge() > 29) {
-            patientAssessment.setRisk(Risk.EARLYONSET);
+        if (triggerCount >= 8 && age > 29) {
+            risk = Risk.EARLYONSET;
         }
+        assessmentBean.setRisk(risk);
     }
+
+
 }

@@ -1,21 +1,17 @@
 package com.openclassrooms.mediscreen.assessments.repository;
 
 import com.openclassrooms.mediscreen.assessments.domain.Patient;
+import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+@FeignClient(name="ms-patient", url = "localhost:8081")
+public interface PatientRepository {
 
-@Repository
-public class PatientRepository {
+    @GetMapping("/patient/{id}")
+    Patient findPatientById(@PathVariable("id") int id);
 
-    Patient patients;
-
-    public Patient findPatientById(int id) {
-        return patients.getPatientId(id);
-    }
 
 
 }

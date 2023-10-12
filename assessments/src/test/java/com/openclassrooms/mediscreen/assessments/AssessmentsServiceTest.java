@@ -17,6 +17,7 @@ import org.mockito.MockitoAnnotations;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -25,86 +26,60 @@ import static org.mockito.Mockito.*;
 
 public class AssessmentsServiceTest {
 
-    @InjectMocks
-    private PatientAssessmentsService patientAssessmentsService;
 
-    @Mock
-    private PatientNoteRepository patientNoteRepository;
+    @Test
+    public void testCalculateTriggerCount() {
+        // Créer une instance du service
+        PatientAssessmentsService service = new PatientAssessmentsService();
 
-    @Mock
-    private PatientRepository patientRepository;
+        // Créer des notes simulées
+        PatientNote note1 = new PatientNote();
+        note1.setNoteContent("hemoglobin a1c test");
+        PatientNote note2 = new PatientNote();
+        note2.setNoteContent("smoker");
 
-    @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.initMocks(this);
+        // Créer une liste de notes simulées
+        List<PatientNote> notes = Arrays.asList(note1, note2);
+
+        // Appeler la méthode à tester
+        int triggerCount = service.calculateTriggerCount(notes);
+
+        // Vérifier que le résultat est correct
+        assertEquals(2, triggerCount); // Il y a deux termes déclencheurs dans les notes
     }
 
     @Test
-    public void testPatientAssessment() throws PatientNotFoundException, NotesNotFoundException {
-        // Créez des données simulées pour le test
-        int patId = 1;
+    public void testCalculateAge() {
+        // Créer une instance du service
+        PatientAssessmentsService service = new PatientAssessmentsService();
+
+        // Créer un patient simulé avec une date de naissance
         Patient patient = new Patient();
-        patient.setPatientId(patId);
-        patient.setDate(LocalDate.of(1980, 1, 1));
+        LocalDate birthDate = LocalDate.of(1990, 5, 15);
+        patient.setBirthDate(birthDate);
 
-        List<PatientNote> notes = new ArrayList<>();
-        notes.add(new PatientNote(1,1,"Note with abnormal cholesterol"));
-        notes.add(new PatientNote(1,1,"Note with dizziness"));
+        // Appeler la méthode à tester
+        int age = service.calculateAge(patient);
 
-        // Configurez le comportement simulé des repositories
-        when(patientRepository.findPatientById(patId)).thenReturn(patient);
-        when(patientNoteRepository.findByPatientId(patId)).thenReturn(notes);
-
-        // Appelez la méthode du service pour obtenir l'évaluation du patient
-        PatientAssessment assessment = patientAssessmentsService.patientAssessment(patId);
-
-        // Vérifiez que l'âge est calculé correctement
-        assertEquals(43, assessment.getAge(), "Age should be calculated correctly");
-
-        // Vérifiez que le risque est correctement calculé en fonction des notes
-        assertEquals(Risk.BORDERLINE, assessment.getRisk(), "Risk should be BORDERLINE");
-
-        // Vérifiez que les méthodes des repositories ont été appelées
-        verify(patientRepository, times(1)).findPatientById(patId);
-        verify(patientNoteRepository, times(1)).findByPatientId(patId);
+        // Vérifier que l'âge est correct
+        int currentYear = LocalDate.now().getYear();
+        assertEquals(currentYear - 1990, age);
     }
 
     @Test
-    public void testPatientAssessmentWithNoPatient() {
-        // Créez un cas où le patient n'est pas trouvé
-        int patId = 1;
-
-        // Configurez le comportement simulé du repository pour retourner null
-        when(patientRepository.findPatientById(patId)).thenReturn(null);
-
-        // Appelez la méthode du service en attendant une exception
-        assertThrows(PatientNotFoundException.class, () -> {
-            patientAssessmentsService.patientAssessment(patId);
-        });
-
-        // Vérifiez que le repository a été appelé
-        verify(patientRepository, times(1)).findPatientById(patId);
-    }
-
-    @Test
-    public void testPatientAssessmentWithNoNotes() {
-        // Créez un cas où il n'y a pas de notes pour le patient
-        int patId = 1;
+    public void testCalculateRisk() {
+        PatientAssessmentsService service = new PatientAssessmentsService();
         Patient patient = new Patient();
-        patient.setPatientId(patId);
+        patient.setGender("M");
+        LocalDate birthDate = LocalDate.of(1995, 7, 10);
+        patient.setBirthDate(birthDate);
+        PatientAssessment assessmentBean = new PatientAssessment();
+        assessmentBean.setPatient(patient);
+        assessmentBean.setTriggerCount(6);
+        service.calculateRisk(assessmentBean);
 
-        // Configurez le comportement simulé des repositories
-        when(patientRepository.findPatientById(patId)).thenReturn(patient);
-        when(patientNoteRepository.findByPatientId(patId)).thenReturn(new ArrayList<>());
-
-        // Appelez la méthode du service en attendant une exception
-        assertThrows(NotesNotFoundException.class, () -> {
-            patientAssessmentsService.patientAssessment(patId);
-        });
-
-        // Vérifiez que les repositories ont été appelés
-        verify(patientRepository, times(1)).findPatientById(patId);
-        verify(patientNoteRepository, times(1)).findByPatientId(patId);
+        assertEquals(Risk.EARLYONSET, assessmentBean.getRisk());
     }
+
 }
 

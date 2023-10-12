@@ -32,7 +32,6 @@
                 <th>Firstname</th>
                 <th>Lastname</th>
                 <th>Gender</th>
-                <th>Birthdate</th>
                 <th>Address</th>
                 <th>Phone number</th>
                 <th>Actions</th>
@@ -44,7 +43,6 @@
                 <td th:text="${patient.firstName}"></td>
                 <td th:text="${patient.lastName}"></td>
                 <td th:text="${patient.gender}"></td>
-                <td th:text="${#dates.format(patient.birthDate, 'dd/MM/yyyy')}"></td>
                 <td th:text="${patient.address}"></td>
                 <td th:text="${patient.phoneNumber}"></td>
                 <td>

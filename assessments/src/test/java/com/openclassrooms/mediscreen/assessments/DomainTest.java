@@ -16,7 +16,7 @@ public class DomainTest {
 
     @BeforeEach
     public void setUp() {
-        patientNote = new PatientNote(1, "Sample note");
+        patientNote = new PatientNote("1",1, "Sample note");
         patient = new Patient();
     }
 
@@ -34,7 +34,7 @@ public class DomainTest {
         patient.setPatientId(patientId);
         patient.setLastName(lastName);
         patient.setFirstName(firstName);
-        patient.setDate(date);
+        patient.setBirthDate(date);
         patient.setGender(gender);
         patient.setAddress(address);
         patient.setPhone(phone);
@@ -55,35 +55,32 @@ public class DomainTest {
     @Test
     public void testGettersAndSetters() {
 
-        int expectedId = 1;
+        String expectedId = "1";
         patientNote.setId(expectedId);
         assertEquals(expectedId, patientNote.getId(), "getId should return the expected value");
 
         int expectedPatientId = 2;
-        patientNote.setPatientId(expectedPatientId);
-        assertEquals(expectedPatientId, patientNote.getPatientId(), "getPatientId should return the expected value");
+        patientNote.setPatId(expectedPatientId);
+        assertEquals(expectedPatientId, patientNote.getPatId(), "getPatientId should return the expected value");
 
         String expectedNote = "Updated note";
-        patientNote.setNote(expectedNote);
-        assertEquals(expectedNote, patientNote.getNote(), "getNote should return the expected value");
+        patientNote.setNoteContent(expectedNote);
+        assertEquals(expectedNote, patientNote.getNoteContent(), "getNote should return the expected value");
     }
 
     @Test
     public void testConstructors() {
 
-        int expectedId = 1;
+        String expectedId = "1";
         int expectedPatientId = 2;
         String expectedNote = "Sample note";
 
         PatientNote patientNoteWithId = new PatientNote(expectedId, expectedPatientId, expectedNote);
         assertEquals(expectedId, patientNoteWithId.getId(), "Constructor with id should set the id");
-        assertEquals(expectedPatientId, patientNoteWithId.getPatientId(), "Constructor with id should set the patientId");
-        assertEquals(expectedNote, patientNoteWithId.getNote(), "Constructor with id should set the note");
+        assertEquals(expectedPatientId, patientNoteWithId.getPatId(), "Constructor with id should set the patientId");
+        assertEquals(expectedNote, patientNoteWithId.getNoteContent(), "Constructor with id should set the note");
 
-        PatientNote patientNoteWithoutId = new PatientNote(expectedPatientId, expectedNote);
-        assertEquals(0, patientNoteWithoutId.getId(), "Constructor without id should set the id to 0");
-        assertEquals(expectedPatientId, patientNoteWithoutId.getPatientId(), "Constructor without id should set the patientId");
-        assertEquals(expectedNote, patientNoteWithoutId.getNote(), "Constructor without id should set the note");
     }
+
 }
 

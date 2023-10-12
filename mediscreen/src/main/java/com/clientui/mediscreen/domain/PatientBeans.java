@@ -1,5 +1,6 @@
 package com.clientui.mediscreen.domain;
 import java.sql.Date;
+import java.time.LocalDate;
 
 
 public class PatientBeans {
@@ -7,7 +8,7 @@ public class PatientBeans {
     private int id;
     private String firstName;
     private String lastName;
-    private Date birthDate;
+    private LocalDate birthDate;
     private String gender;
     private String address;
     private String phoneNumber;
@@ -46,11 +47,11 @@ public class PatientBeans {
         this.address = address;
     }
 
-    public Date getBirthDate() {
+    public LocalDate getBirthDate() {
         return birthDate;
     }
 
-    public void setBirthDate(Date birthDate) {
+    public void setBirthDate(LocalDate birthDate) {
         this.birthDate = birthDate;
     }
 

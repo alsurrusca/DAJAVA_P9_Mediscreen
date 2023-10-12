@@ -1,42 +1,54 @@
 package com.openclassrooms.mediscreen.assessments.domain;
 
+import org.springframework.data.annotation.Id;
+
+import java.util.List;
+
 public class PatientNote {
-    private int id;
-    private int patientId;
-    private String note;
 
-    public PatientNote(int id, int patientId, String note) {
+    private String id;
+    private int patId;
+    private String risk;
+    private String noteContent;
+
+    public PatientNote() {
+    }
+
+    public PatientNote(String id, int patId, String noteContent) {
         this.id = id;
-        this.patientId = patientId;
-        this.note = note;
+        this.patId = patId;
+        this.noteContent = noteContent;
     }
 
-    public PatientNote(int patientId,String note) {
-        this.patientId = patientId;
-        this.note = note;
-    }
-
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public int getPatientId() {
-        return patientId;
+    public int getPatId() {
+        return patId;
     }
 
-    public void setPatientId(int patientId) {
-        this.patientId = patientId;
+    public void setPatId(int patId) {
+        this.patId = patId;
     }
 
-    public String getNote() {
-        return note;
+    public String getRisk() {
+        return risk;
     }
 
-    public void setNote(String note) {
-        this.note = note;
+    public void setRisk(String risk) {
+        this.risk = risk;
+    }
+
+    public String getNoteContent() {
+        return noteContent;
+    }
+
+    public void setNoteContent(String noteContent) {
+        this.noteContent = noteContent;
     }
 }

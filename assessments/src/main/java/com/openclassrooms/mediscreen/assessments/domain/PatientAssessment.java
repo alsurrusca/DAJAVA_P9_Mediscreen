@@ -1,34 +1,38 @@
 package com.openclassrooms.mediscreen.assessments.domain;
 
-import java.time.LocalDate;
-import java.time.Period;
-import java.time.ZoneId;
+import java.util.Arrays;
 import java.util.List;
 
 public class PatientAssessment {
 
-
-    private List<PatientNote> note;
+    Patient patientBeans;
+    private List<PatientNote> notes;
     private Risk risk;
     private int age;
-    private Patient patient;
+    private int triggerCount;
+    private List<String> triggerTerms = Arrays.asList("hemoglobin a1c", "microalbumin", "body height", "body weight", "smoker", "abnormal", "cholesterol", "dizziness", "relapse", "reaction", "antibodies");
 
-    public PatientAssessment(List<PatientNote> note, Patient patient) {
-        this.note = note;
-        this.patient = patient;
-        age = getAge();
+    public PatientAssessment(Patient patientBeans, List<PatientNote> patientNotes) {
+        this.patientBeans = patientBeans;
+        this.notes = notes;
     }
 
-    public PatientAssessment() {
+    public PatientAssessment(){}
 
+    public Patient getPatient() {
+        return patientBeans;
     }
 
-    public List<PatientNote> getNote() {
-        return note;
+    public void setPatient(Patient patientBeans) {
+        this.patientBeans = patientBeans;
     }
 
-    public void setNote(List<PatientNote> note) {
-        this.note = note;
+    public List<PatientNote> getNotes() {
+        return notes;
+    }
+
+    public void setNotes(List<PatientNote> notes) {
+        this.notes = notes;
     }
 
     public Risk getRisk() {
@@ -39,47 +43,29 @@ public class PatientAssessment {
         this.risk = risk;
     }
 
+    public int getAge() {
+        return age;
+    }
 
     public void setAge(int age) {
         this.age = age;
     }
 
-    public Patient getPatient() {
-        return patient;
+
+    public List<String> getTriggerTerms() {
+        return triggerTerms;
     }
 
-    public void setPatient(Patient patient) {
-        this.patient = patient;
+    public void setTriggerTerms(List<String> triggerTerms) {
+        this.triggerTerms = triggerTerms;
     }
 
-    public String riskString(){
-        if (risk.equals(risk.BORDERLINE)) {
-            return "Borderline";
-        }
-        else if (risk.equals(risk.INDANGER)) {
-            return "In danger";
-        }
-        else if (risk.equals(risk.EARLYONSET)) {
-            return "Early onset";
-        }
-        else {
-            return "None";
-        }
+    public int getTriggerCount(){
+        return triggerCount;
+    }
+    public void setTriggerCount(int triggerCount) {
+        this.triggerCount = triggerCount;
     }
 
-    public int getAge() {
-        if (patient == null || patient.getDate() == null) {
-            return 0;
-        }
-        LocalDate currentDate = LocalDate.now();
-        LocalDate birthDate = patient.getDate();
-        return Period.between(birthDate, currentDate).getYears();
-    }
 
-    @Override
-    public String toString() {
-        return "Patient : " +
-                " " + patient.getFirstName() + " " + patient.getLastName()
-                + "(age " + getAge() + ") diabetes assessment is: " + riskString();
-    }
 }

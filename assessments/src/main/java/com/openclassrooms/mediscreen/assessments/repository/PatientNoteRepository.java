@@ -6,49 +6,19 @@ import java.util.List;
 import java.util.Optional;
 
 import com.openclassrooms.mediscreen.assessments.domain.PatientNote;
-import org.springframework.stereotype.Repository;
 
-@Repository
-public class PatientNoteRepository {
 
-    private static List<PatientNote> notes = new ArrayList<>();
-    private static int nextId = 1;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
-    public List<PatientNote> findAll() {
-        return notes;
-    }
+@FeignClient(name = "ms-notes", url="localhost:8082")
+public interface PatientNoteRepository {
 
-    public Optional<PatientNote> findById(int id) {
-        return notes.stream().filter(note -> note.getPatientId() == id).findFirst();
-    }
+    @GetMapping("/notes/list")
+    List<PatientNote> getAllNotes();
 
-    public List<PatientNote> findByPatientId(int patientId) {
-        List<PatientNote> patientNotes = new ArrayList<>();
-        for (PatientNote note : notes) {
-            if (note.getId() == patientId) {
-                patientNotes.add(note);
-            }
-        }
-        return patientNotes;
-    }
-
-    public PatientNote save(PatientNote note) {
-        if (note.getPatientId() == 0) {
-            note.setPatientId(nextId++);
-            notes.add(note);
-        } else {
-            int index = notes.indexOf(note);
-            if (index != -1) {
-                notes.set(index, note);
-            } else {
-                notes.add(note);
-            }
-        }
-        return note;
-    }
-
-    public void deleteById(int id) {
-        notes.removeIf(note -> note.getPatientId() == id);
-    }
+    @GetMapping("/notes/patient/{patientId}")
+    List<PatientNote> getNoteByPatId(@PathVariable("patientId") int patientId);
 
 }
